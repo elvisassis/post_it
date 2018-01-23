@@ -1,0 +1,97 @@
+<!doctype html>
+  <html lang="pt-br" ng-app="app">
+      <head>
+          <meta charset="utf-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <title>Post IT</title>
+          <meta name="description" content="">
+          <meta name="viewport" content="width=device-width">
+          <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+          <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+          <link rel="stylesheet" href="styles/main.css">
+      </head>
+      <body ng-controller="InicialCtrl">
+          <div class="container">
+              <nav class="navbar navbar-inverse" role="navigation">
+                  <div class="navbar-header">
+                      <span class="navbar-brand">Post IT</span>
+                  </div>
+   
+                  <div class="navbar-form navbar-right" ng-hide="isLogado">
+                    <div class="form-group">
+                      <input type="text" id="username" ng-model="nome" maxlength="10"  class="form-control input-sm" placeholder="Digite seu nome">
+                    </div>
+                    <button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin(nome)">Entrar</button>
+
+                  </div>
+                  <h4>teste</h4>
+              </nav>
+              <div class="row"> 
+                  <div class="col-md-3" >
+                      <h3>Quem está online</h3>
+                      <ul class="online-users" ng-repeat="usuario in usuariosOnline">
+                         <li><span class="glyphicon glyphicon-user"></span> {{usuario.nome}}</li>
+                      </ul>
+                  </div>
+                  <div class="col-md-9">
+                      <div id="not-logged" ng-hide="isLogado">
+                          <h2>Você precisa se conectar</h2>
+                          <h3>Digite seu nome e clique em "Entrar"</h3>
+                      </div>
+  
+                      <div id="logged" ng-show="isLogado">
+                          <div class="post-form">
+                              <div class="action">O que você tem em mente?</div>
+                              <textarea class="txt" id="post-content" ng-model="post"></textarea>
+                              <div class="pull-right">
+                                  <button class="btn btn-info glyphicon glyphicon-ok" id="btn-postar" ng-click="postar(post)"> Enviar</button>
+                              </div>
+                          </div>
+                          <div class="posts"></div>
+                      </div>
+                    </div>
+               </div>
+
+                      <div class="post" ng-show="postCount > 0" ng-repeat="post in posts">
+                        <div class="poster-info">
+                          <span class="poster">{{post.author}}</span>
+                          <span class="action">escreveu, as </span>
+                          <span class="time">{{post.hora}} hs</span>
+                        </div>
+                        <div class="post-body">{{post.text}}</div>
+                        <div class="post-actions">
+                            <a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id)">{{likeCount}}</a>  
+                            <a class="glyphicon glyphicon-comment lnk-comment"></a>
+                        </div>
+   
+                        <div data-post-to-comment-id="{{id}}" class="comment-form" ng-hide="true">
+                            <div class="action">Deixe seu comentário</div>
+                            <textarea class="txt"></textarea>
+                            <div class="pull-right">
+                                <button class="btn btn-info btn-sm glyphicon glyphicon-ok btn-commentar"> Enviar</button>
+                                <button class="btn btn-info btn-sm glyphicon glyphicon-remove lnk-cancel-comment" data-post-id="{{id}}"> Cancelar</button>
+                            </div>
+                        </div>
+   
+                      <div class="post-comments"></div>
+                    </div>
+                     <div class="comment" ng-hide="true">
+                        <div class="poster-info">
+                            <span class="poster">{{author}}</span>
+                            <span class="action">comentou, as</span>
+                            <span class="time">{{hora}} hs</span>
+                        </div>
+                        <div class="post-body">{{text}}</div>
+                        <div class="post-actions">
+                            <a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-comment-id="{{id}}" data-like="true">(0)</a>  
+                        </div>
+                      </div>
+
+            </div>
+          <script src="bower_components/angular/angular.js"></script>
+          <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+
+          <script src="scripts/app.js"></script>
+          <script src="scripts/inicialCtrl.js"></script>
+      </body>
+  </html>
