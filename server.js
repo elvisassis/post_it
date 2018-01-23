@@ -67,7 +67,8 @@ var UserHandling = module.exports = function(io) {
       if(data.nome) {
         socket.handshake.nome = data.nome;
         that.loggedUsers[socket.id] = socket;
-        socket.emit('userlogin', data);
+        console.log("dados usuario logado " + socket.id);
+        socket.emit('userlogin', {nome: data.nome, id: socket.id});
         that.onUserList(socket);
       } else {
         this.sendMessage(socket, 'vc precisa escolher um nome');
@@ -129,6 +130,7 @@ var UserHandling = module.exports = function(io) {
    
     onLikePost: function(socket, data) {
       var likeCount = this.posts[data.postId+''];
+      console.log("dados vindo do frontend "+data.postId)
    
       if(data.like) {
         likeCount += 1;
@@ -137,6 +139,8 @@ var UserHandling = module.exports = function(io) {
       }
    
       this.posts[data.postId+''] = likeCount;
+
+
    
       socket.emit('likepost', {postId: data.postId, numLikes: likeCount});
       socket.broadcast.emit('likepost', {postId: data.postId, numLikes: likeCount});

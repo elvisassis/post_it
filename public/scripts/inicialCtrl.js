@@ -3,11 +3,11 @@ postIt.controller('InicialCtrl', function($scope){
 
 
 	var socket = io();
-		var vm = this;
 
     $scope.isLogado = false;
     $scope.postCount = 0;
     $scope.posts = [];
+    $scope.likeCount = 0;
     //$scope.usuariosOnline = [];
 
 		//vm.userLogin = userLogin; 
@@ -32,8 +32,9 @@ postIt.controller('InicialCtrl', function($scope){
       });
    
       socket.on('userlogin', function(data) {  
+           console.log("Dados usuario Logado ");
            console.log(data);  
-      	   $scope.usuarioLogado = data.nome;
+      	   $scope.usuarioLogado = data;
            $scope.isLogado = true;
       });
    
@@ -44,6 +45,7 @@ postIt.controller('InicialCtrl', function($scope){
       });
    
       socket.on('makepost', function(data) {
+          console.log("Dados do autor do post ");
           console.log(data);
           post(data);
           $scope.$apply();
@@ -54,7 +56,8 @@ postIt.controller('InicialCtrl', function($scope){
       });
    
       socket.on('likepost', function(data) {
-          likepost(data);
+          $scope.likeCount = data.numLikes;
+          $scope.$apply();
       });
    
       socket.on('likecomment', function(data) {
@@ -76,9 +79,15 @@ postIt.controller('InicialCtrl', function($scope){
           socket.emit('makecomment', comment);
       }
    
-      $scope.likePost = function(likeData) {
-          
-          socket.emit('likepost', likeData);
+      $scope.likePost = function(postId, authorId, likeCount) {
+          var like;
+          if(authorId === this.usuarioLogado.id && likeCount > 0){
+            like = false;
+          }
+          else{
+            like = true;
+          }
+          socket.emit('likepost', {postId: postId, like: like});
       }
    
       function likeComment(likeData) {

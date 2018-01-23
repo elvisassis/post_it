@@ -60,7 +60,7 @@
                         </div>
                         <div class="post-body">{{post.text}}</div>
                         <div class="post-actions">
-                            <a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id)">{{likeCount}}</a>  
+                            <a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id, post.authorId, likeCount)">{{likeCount}}</a>  
                             <a class="glyphicon glyphicon-comment lnk-comment"></a>
                         </div>
    
