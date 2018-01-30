@@ -47,8 +47,8 @@ UserHandling.prototype = {
 			that.onMakePost(client, data);
 		});
 
-		client.on('makecomment', function(data) {
-			that.onMakeComment(client, data);
+		client.on('makecomment', function(comentario) {
+			that.onMakeComment(client, comentario);
 		});
 
 		client.on('likepost', function(data) {
@@ -126,43 +126,48 @@ UserHandling.prototype = {
 	},
 
 	onMakePost: function(client, data) {
-		var id = Date.now(),
-		postData = {
-			author: client.handshake.nome,
-			authorId: client.id,
-			hora: id,
-			id: id,
-			text: data,
-			likeCount: 0,
-			comentarios: []
-		};
+		var id = Date.now(), //Foi utilizado o timestamp da hora do post como identificador único para cada post.
+				// Cria um post
+				postData = {
+					author: client.handshake.nome,
+					authorId: client.id,
+					hora: id,
+					id: id,
+					text: data,
+					isComentario: false,
+					likeCount: 0,
+					comentarios: []
+				};
 
-		console.log(postData);
+		// console.log(postData);
 
 		//cadastra o post no controle de likes
 		this.posts[id+''] = 0;
 
+		//Envia para todos os clientes que foi realizado um novo post
 		client.emit('makepost', postData);
 		client.broadcast.emit('makepost', postData);
 	},
 
-	onMakeComment: function(client, data) {
-		var id = Date.now(),
-		commentData = {
-			author: client.handshake.nome,
-			authorId: client.id,
-			hora: Date.now(),
-			text: data.text,
-			postId: data.postId,
-			id: id
-		};
+	onMakeComment: function(client, comentario) {
+		var id = Date.now(), //timestamp da hora do comentário como identificador único para cada comentário.
+				commentData = {
+					author: client.handshake.nome,
+					authorId: client.id,
+					hora: id,
+					text: comentario.text,
+					postId: comentario.postId,
+					id: id,
+					likeCount: 0
+				};
 
 		//cadastra o post no controle de likes
 		this.posts[id+''] = 0;
 
+		//Envia para todos os clientes que foi realizado um novo comentário
 		client.emit('makecomment', commentData);
 		client.broadcast.emit('makecomment', commentData);
-		console.log(commentData);
+		// console.log(commentData);
 	},
 
 	onLikePost: function(client, data) {

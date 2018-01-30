@@ -27,7 +27,7 @@
 			</div>
 		</nav>
 
-		<!-- ########################## CONTEÚDO ########################## -->
+		<!-- ########################## FORMULÁRIO DE CRIAÇÃO DO POST ########################## -->
 		<div class="row">
 			<!-- =============== Lista dos Usuários Online =============== -->
 			<div class="col-md-3" ng-show='isLogado'>
@@ -37,7 +37,7 @@
 				</ul>
 			</div>
 
-			<!-- =============== Conteúdo Principal =============== -->
+			<!-- =============== Formulário Post =============== -->
 			<div class="col-md-9">
 				<!-- Mensagem Inicial -->
 				<div id="not-logged" ng-hide="isLogado">
@@ -45,7 +45,7 @@
 					<h4>Digite seu nome e clique em "Entrar".</h4>
 				</div>
 
-				<!-- Campo de entrada para um novo comentário -->
+				<!-- Campo de entrada para um novo post -->
 				<div id="logged" ng-show="isLogado">
 					<div class="post-form">
 						<div class="action">O que você tem em mente?</div>
@@ -60,42 +60,47 @@
 
 		</div>
 
+		<!-- ########################## LISTA DOS POSTS E COMENTÁRIOS ########################## -->
 		<div class="post" ng-show="postCount > 0" ng-repeat="post in posts">
+			<!-- =============== Post Realizado =============== -->
 			<div class="poster-info">
 				<span class="poster">{{post.author}}</span>
-				<span class="action">escreveu, as </span>
+				<span class="action">escreveu, às </span>
 				<span class="time">{{post.hora}} hs</span>
 			</div>
 			<div class="post-body">{{post.text}}</div>
 			<div class="post-actions">
 				<a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id, post.authorId, post.likeCount)">{{post.likeCount}}</a>
-				<a class="glyphicon glyphicon-comment lnk-comment" ng-click="comentar()"></a>
+				<a class="glyphicon glyphicon-comment lnk-comment" ng-click="comentar(post.id)"></a>
 			</div>
 
-			<div data-post-to-comment-id="{{id}}" class="comment-form" ng-show="isComentario">
+			<!-- =============== Formulário Comentário =============== -->
+			<!-- <div data-post-to-comment-id="{{id}}" class="comment-form" ng-show="isComentario"> -->
+			<div class="comment-form" ng-show="post.isComentario">
 				<div class="action">Deixe seu comentário</div>
 				<textarea class="txt" ng-model="comentario"></textarea>
 				<div class="pull-right">
-					<button class="btn btn-info btn-sm glyphicon glyphicon-ok btn-commentar" ng-click="coment(comentario, post.id)"> Enviars
-					</button>
-					<button class="btn btn-info btn-sm glyphicon glyphicon-remove lnk-cancel-comment" data-post-id="{{id}}"> Cancelar</button>
+					<button class="btn btn-info btn-sm glyphicon glyphicon-ok btn-commentar" ng-click="newComment(comentario, post.id)"> Enviar</button>
+					<button class="btn btn-info btn-sm glyphicon glyphicon-remove lnk-cancel-comment" ng-click="cancelComment(post.id)"> Cancelar</button>
 				</div>
 			</div>
 
-			<div class="post-comments"></div>
+			<!-- =============== Lista dos comentários realizados =============== -->
+			<div ng-show="post.comentarios.length > 0" ng-repeat="comentario in post.comentarios" class="post-comments">
+				<div class="comment" ng-show="true" >
+					<div class="poster-info">
+						<span class="poster">{{comentario.author}}</span>
+						<span class="action">comentou, às</span>
+						<span class="time">{{comentario.hora}} hs</span>
+					</div>
+					<div class="post-body">{{comentario.text}}</div>
+					<div class="post-actions">
+						<a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-comment-id="{{id}}" data-like="true">(0)</a>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<!-- <div class="comment" ng-show="true" >
-			<div class="poster-info">
-				<span class="poster">{{post.comentarios.author}}</span>
-				<span class="action">escreveu, as</span>
-				<span class="time">{{post.comentarios.hora}} hs</span>
-			</div>
-			<div class="post-body">{{post.comentarios.text}}</div>
-			<div class="post-actions">
-				<a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-comment-id="{{id}}" data-like="true">(0)</a>
-			</div>
-		</div> -->
 	</div>
 
 	<script src="bower_components/angular/angular.js"></script>
@@ -103,7 +108,7 @@
 
 	<script src="scripts/app.js"></script>
 	<script src="scripts/inicialCtrl.js"></script>
-	<script src="teste/underscore/underscore.js"></script>
+	<!-- <script src="teste/underscore/underscore.js"></script> -->
 
 </body>
 </html>
