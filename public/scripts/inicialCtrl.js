@@ -7,10 +7,12 @@ postIt.controller('InicialCtrl', function($scope){
     $scope.isLogado = false;
     $scope.postCount = 0;
     $scope.posts = [];
-    $scope.likeCount = 0;
+    $scope.isComentario = false
     //$scope.usuariosOnline = [];
 
 		//vm.userLogin = userLogin; 
+
+    var vm = this;
 
 	init();
 
@@ -52,11 +54,17 @@ postIt.controller('InicialCtrl', function($scope){
       });
    
       socket.on('makecomment', function(data) {
-          makecomment(data);
+
+          data.hora = formatarHora(data.hora);
+          var index = _.findIndex($scope.posts, {id: data.postId});
+          $scope.posts[index].comentarios = data;
+          $scope.$apply();
+          //makecomment(data);
       });
    
       socket.on('likepost', function(data) {
-          $scope.likeCount = data.numLikes;
+          var index = _.findIndex($scope.posts, {id: data.postId});
+          $scope.posts[index].likeCount = data.numLikes;
           $scope.$apply();
       });
    
@@ -74,9 +82,10 @@ postIt.controller('InicialCtrl', function($scope){
 
           socket.emit('makepost', post);
       }
-   
-      function makeComment(comment) {
-          socket.emit('makecomment', comment);
+
+      $scope.coment = function(comentario, postId) {
+          socket.emit('makecomment', {text: comentario, postId: postId});
+          console.log(comentario);
       }
    
       $scope.likePost = function(postId, authorId, likeCount) {
@@ -101,11 +110,16 @@ postIt.controller('InicialCtrl', function($scope){
         $scope.postCount += 1;
       }
 
+      
+
       //Formatador da hora para o mustache
     function formatarHora(timestamp) {
         var today = new Date(timestamp);
         return today.getHours() + ':' + today.getMinutes();
     }
 
+    $scope.comentar = function(){
+      $scope.isComentario = true;
+    }
 		
 });

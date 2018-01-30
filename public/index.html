@@ -9,13 +9,9 @@
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
 	<link rel="stylesheet" href="styles/main.css">
-	<script src="bower_components/angular/angular.js"></script>
-	<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
 
-	<script src="scripts/app.js"></script>
-	<script src="scripts/inicialCtrl.js"></script>
 </head>
-<body ng-controller="InicialCtrl">
+<body ng-controller="InicialCtrl as inicio">
 	<div class="container">
 		<nav class="navbar navbar-inverse" role="navigation">
 			<div class="navbar-header">
@@ -28,7 +24,7 @@
 				</div>
 				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin(nome)">Entrar</button>
 			</div>
-			<h4>teste</h4>
+			
 		</nav>
 		<div class="row">
 			<div class="col-md-3" >
@@ -64,32 +60,41 @@
 			</div>
 			<div class="post-body">{{post.text}}</div>
 			<div class="post-actions">
-				<a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id, post.authorId, likeCount)">{{likeCount}}</a>
-				<a class="glyphicon glyphicon-comment lnk-comment"></a>
+				<a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id, post.authorId, post.likeCount)">{{post.likeCount}}</a>
+				<a class="glyphicon glyphicon-comment lnk-comment" ng-click="comentar()"></a>
 			</div>
 
-			<div data-post-to-comment-id="{{id}}" class="comment-form" ng-hide="true">
+			<div data-post-to-comment-id="{{id}}" class="comment-form" ng-show="isComentario">
 				<div class="action">Deixe seu comentário</div>
-				<textarea class="txt"></textarea>
+				<textarea class="txt" ng-model="comentario"></textarea>
 				<div class="pull-right">
-					<button class="btn btn-info btn-sm glyphicon glyphicon-ok btn-commentar"> Enviar</button>
+					<button class="btn btn-info btn-sm glyphicon glyphicon-ok btn-commentar" ng-click="coment(comentario, post.id)"> Enviars
+					</button>
 					<button class="btn btn-info btn-sm glyphicon glyphicon-remove lnk-cancel-comment" data-post-id="{{id}}"> Cancelar</button>
 				</div>
 			</div>
 
 			<div class="post-comments"></div>
 		</div>
-		<div class="comment" ng-hide="true">
+		<div class="comment" ng-show="true" >
 			<div class="poster-info">
-				<span class="poster">{{author}}</span>
-				<span class="action">comentou, as</span>
-				<span class="time">{{hora}} hs</span>
+				<span class="poster">{{post.comentarios.author}}</span>
+				<span class="action">escreveu, as</span>
+				<span class="time">{{post.comentarios.hora}} hs</span>
 			</div>
-			<div class="post-body">{{text}}</div>
+			<div class="post-body">{{post.comentarios.text}}</div>
 			<div class="post-actions">
 				<a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-comment-id="{{id}}" data-like="true">(0)</a>
 			</div>
 		</div>
 	</div>
+
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+
+	<script src="scripts/app.js"></script>
+	<script src="scripts/inicialCtrl.js"></script>
+	<script src="teste/underscore/underscore.js"></script>
+
 </body>
 </html>

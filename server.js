@@ -98,8 +98,12 @@ UserHandling.prototype = {
             authorId: socket.id,
             hora: id,
             id: id,
-            text: data
+            text: data,
+            likeCount: 0,
+            comentarios: []
           };
+
+          console.log(postData);
 
       //cadastra o post no controle de likes
       this.posts[id+''] = 0;
@@ -113,7 +117,7 @@ UserHandling.prototype = {
           commentData = {
             author: socket.handshake.nome,
             authorId: socket.id,
-            timestamp: Date.now(),
+            hora: Date.now(),
             text: data.text,
             postId: data.postId,
             id: id
@@ -129,7 +133,6 @@ UserHandling.prototype = {
 
     onLikePost: function(socket, data) {
       var likeCount = this.posts[data.postId+''];
-      console.log("dados vindo do frontend "+data.postId)
 
       if(data.like) {
         likeCount += 1;
