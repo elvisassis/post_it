@@ -8,9 +8,9 @@ postIt.controller('InicialCtrl', function($scope){
 	// $scope.isComentario = false;
 
 	//DADOS PARA TESTE
-	$scope.nome = "Márcio";
-	$scope.post = "Post de teste";
-	$scope.comentario = "Comentário de teste";
+	// $scope.nome = "Márcio";
+	// $scope.post = "Post de teste";
+	// $scope.comentario = "Comentário de teste";
 
 
 	//$scope.usuariosOnline = [];
