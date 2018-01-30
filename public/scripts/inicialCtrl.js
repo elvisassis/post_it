@@ -5,7 +5,6 @@ postIt.controller('InicialCtrl', function($scope){
 	$scope.postCount = 0;
 	$scope.posts = []; //Mantem todos os posts
 	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
-	// $scope.isComentario = false;
 
 	//DADOS PARA TESTE
 	$scope.nome = "Márcio";
@@ -39,8 +38,6 @@ postIt.controller('InicialCtrl', function($scope){
 		});
 
 		socket.on('userlogin', function(data) {
-			// console.log("Dados usuario Logado ");
-			// console.log(data);
 
 			$scope.usuarioLogado = data; //Armazena os dados do usuário logado.
 			$scope.isLogado = true;
@@ -54,9 +51,6 @@ postIt.controller('InicialCtrl', function($scope){
 		});
 
 		socket.on('makepost', function(postData) {
-			// console.log("Dados do autor do post ");
-			// console.log(postData);
-			//postData - dados do post
 
 			post(postData);
 			$scope.$apply(); //Atualiza a visão
@@ -66,9 +60,6 @@ postIt.controller('InicialCtrl', function($scope){
 
 			commentData.hora = formatarHora(commentData.hora);
 
-			// var index = _.findIndex($scope.posts, {id: commentData.postId});
-			// $scope.posts[index].comentarios = commentData;
-
 			//Percorre todos os posts cadastrados
 			$scope.posts.forEach(function(post){
 				if (post.id == commentData.postId) { //Verifica se o post do comentário existe
@@ -77,7 +68,6 @@ postIt.controller('InicialCtrl', function($scope){
 			});
 
 			$scope.$apply();
-			//makecomment(commentData);
 		});
 
 		socket.on('likepost', function(data) {
@@ -121,7 +111,7 @@ postIt.controller('InicialCtrl', function($scope){
 
 	$scope.postar = function(post) {
 		if (post.trim() == "") {
-			alert("Insira um pensamento.");
+			$scope.habilitarEnvio = false;
 			return;
 		}
 		socket.emit('makepost', post);
@@ -130,8 +120,6 @@ postIt.controller('InicialCtrl', function($scope){
 
 	//Insere novo comentário ao post
 	$scope.newComment = function(comentario, postId) {
-		// console.log("Comentário:", comentario);
-
 		if (comentario.trim() == "") {
 			alert("Insira um comentário.");
 			return;
@@ -167,9 +155,6 @@ postIt.controller('InicialCtrl', function($scope){
 		if (post != null) {
 			post.isComentario = true;
 		}
-
-		// $scope.$apply();
-		// $scope.posts[].isComentario = true;
 	}
 
 	$scope.cancelComment = function(postId){
