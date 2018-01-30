@@ -7,9 +7,9 @@ postIt.controller('InicialCtrl', function($scope){
 	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
 
 	//DADOS PARA TESTE
-	$scope.nome = "Márcio";
-	$scope.post = "Post de teste";
-	$scope.comentario = "Comentário de teste";
+	// $scope.nome = "Márcio";
+	// $scope.post = "Post de teste";
+	// $scope.comentario = "Comentário de teste";
 
 
 	//$scope.usuariosOnline = [];
