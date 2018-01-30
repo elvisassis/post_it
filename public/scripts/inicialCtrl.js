@@ -4,6 +4,7 @@ postIt.controller('InicialCtrl', function($scope){
 	$scope.isLogado = false;
 	$scope.postCount = 0;
 	$scope.posts = []; //Mantem todos os posts
+	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
 	// $scope.isComentario = false;
 
 	//DADOS PARA TESTE
@@ -80,13 +81,31 @@ postIt.controller('InicialCtrl', function($scope){
 		});
 
 		socket.on('likepost', function(data) {
-			var index = _.findIndex($scope.posts, {id: data.postId});
-			$scope.posts[index].likeCount = data.numLikes;
+			// var index = _.findIndex($scope.posts, {id: data.postId});
+			var post = getPostById(data.postId);
+
+			if (post != null) {
+				post.likeCount = data.numLikes;
+			}
+
+			// $scope.posts[index].likeCount = data.numLikes;
 			$scope.$apply();
 		});
 
 		socket.on('likecomment', function(data) {
-			likecomment(data);
+			var post = getPostById(data.postId);
+
+			//Verifica se o post existe
+			if (post != null) {
+				//Percorre todos os comentários do post
+				post.comentarios.forEach(function(comentario){
+					if (comentario.id == data.commentId) { //Verifica se o comentário existe
+						comentario.likeCount = data.numLikes; //Atualiza a quantidade de comentários
+					}
+				});
+			}
+
+			$scope.$apply();
 		});
 	}
 
@@ -130,39 +149,68 @@ postIt.controller('InicialCtrl', function($scope){
 
 	$scope.likePost = function(postId, authorId, likeCount) {
 		var like;
-		if(authorId === this.usuarioLogado.id && likeCount > 0){
-			like = false;
+
+		// Verifica se o usuário logado já deu "like" no post.
+		if (authorId === this.usuarioLogado.id && likeCount > 0) {
+			like = false; //Indica a remoção do "like"
+		} else {
+			like = true; //Indica a adição do "like"
 		}
-		else{
-			like = true;
-		}
+
 		socket.emit('likepost', {postId: postId, like: like});
 	}
 
 	//Abre o formulário de comentário
 	$scope.comentar = function(postId){
+		var post = getPostById(postId);
 
-		setIsComentario(true, postId);
+		if (post != null) {
+			post.isComentario = true;
+		}
+
 		// $scope.$apply();
 		// $scope.posts[].isComentario = true;
 	}
 
 	$scope.cancelComment = function(postId){
-		setIsComentario(false, postId);
+		var post = getPostById(postId);
+
+		if (post != null) {
+			post.isComentario = false;
+		}
+
+		$scope.comentario = "";
+	}
+
+	$scope.likeComment = function(commentData) {
+		var like;
+
+		//Verifica se o usuário logado já deu "like" no comentário.
+		if (commentData.authorId === this.usuarioLogado.id && commentData.likeCount > 0) {
+			like = false; //Indica a remoção do "like"
+		} else {
+			like = true; //Indica a adição do "like"
+		}
+
+		socket.emit("likecomment", {"commentData":commentData, "like":like});
 	}
 
 	/**
-	 * Habilida/desabilita o formulario de comentário para determinado post.
-	 * @param {boolean} bool - Valor que determinará se estará habilitado/desabilitado.
+	 * Percorre o array de post a procura de um determinado post.
 	 * @param {string} postId - Id do post, identificador do post.
+	 * @returns {Object} - Objeto que representa o post ou null, se não existir.
 	 */
-	function setIsComentario(bool, postId) {
+	function getPostById(postId) {
+		var postProcurado = null;
+
 		//Percorre todos posts cadastrados
 		$scope.posts.forEach(function(post){
 			if (post.id == postId) { //Verifica se o post existe
-				post.isComentario = bool; //Habilita os comentários no post.
+				postProcurado = post;
 			}
 		});
+
+		return postProcurado;
 	}
 
 	function likeComment(likeData) {

@@ -70,7 +70,7 @@
 			</div>
 			<div class="post-body">{{post.text}}</div>
 			<div class="post-actions">
-				<a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id, post.authorId, post.likeCount)">{{post.likeCount}}</a>
+				<a class="glyphicon glyphicon-thumbs-up lnk-like-post" data-like="true" ng-click="likePost(post.id, post.authorId, post.likeCount)">({{post.likeCount}})</a>
 				<a class="glyphicon glyphicon-comment lnk-comment" ng-click="comentar(post.id)"></a>
 			</div>
 
@@ -95,7 +95,7 @@
 					</div>
 					<div class="post-body">{{comentario.text}}</div>
 					<div class="post-actions">
-						<a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-comment-id="{{id}}" data-like="true">(0)</a>
+						<a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-like="true" ng-click="likeComment(comentario)">({{comentario.likeCount}})</a>
 					</div>
 				</div>
 			</div>

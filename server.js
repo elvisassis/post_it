@@ -170,36 +170,41 @@ UserHandling.prototype = {
 		// console.log(commentData);
 	},
 
-	onLikePost: function(client, data) {
-		var likeCount = this.posts[data.postId+''];
+	onLikePost: function(client, likeData) {
+		var likeCount = this.posts[likeData.postId+'']; //Quantidade total de "likes" do post.
 
-		if(data.like) {
+		//Verifica se é pra remover ou adicionar o "like".
+		if (likeData.like) {
 			likeCount += 1;
 		} else {
 			likeCount -= 1;
 		}
 
-		this.posts[data.postId+''] = likeCount;
+		//Atualiza a quantidade total de like do post.
+		this.posts[likeData.postId+''] = likeCount;
 
-
-
-		client.emit('likepost', {postId: data.postId, numLikes: likeCount});
-		client.broadcast.emit('likepost', {postId: data.postId, numLikes: likeCount});
+		//Envia para todos os clientes a atualização do "like"
+		client.emit('likepost', {postId: likeData.postId, numLikes: likeCount});
+		client.broadcast.emit('likepost', {postId: likeData.postId, numLikes: likeCount});
 	},
 
 	onLikeComment: function(client, data) {
-		var likeCount = this.posts[data.commentId+''];
+		//Pega a quantidade total de likes do comentário
+		var likeCount = this.posts[data.commentData.id+''];
 
+		//Verifica se é para remover ou adicionar o "like", isso é, se o usuário já deu "like"
 		if(data.like) {
 			likeCount += 1;
 		} else {
 			likeCount -= 1;
 		}
 
-		this.posts[data.commentId+''] = likeCount;
+		//Atualiza o total de "Likes"
+		this.posts[data.commentData.id+''] = likeCount;
 
-		client.emit('likecomment', {commentId: data.commentId, numLikes: likeCount});
-		client.broadcast.emit('likecomment', {commentId: data.commentId, numLikes: likeCount});
+		//Envia para todos clientes o like atualizado.
+		client.emit('likecomment', {postId:data.commentData.postId, commentId: data.commentData.id, numLikes: likeCount});
+		client.broadcast.emit('likecomment', {postId:data.commentData.postId, commentId: data.commentData.id, numLikes: likeCount});
 	}
 
 
