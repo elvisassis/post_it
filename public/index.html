@@ -23,7 +23,7 @@
 				<div class="form-group">
 					<input type="text" id="username" ng-model="nome" maxlength="10"  class="form-control input-sm" placeholder="Digite seu nome">
 				</div>
-				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin(nome)">Entrar</button>
+				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin(nome)" ng-disabled="!nome">Entrar</button>
 			</div>
 		</nav>
 

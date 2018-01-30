@@ -5,6 +5,9 @@ postIt.controller('InicialCtrl', function($scope){
 	$scope.postCount = 0;
 	$scope.posts = []; //Mantem todos os posts
 	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
+	$scope.nome = "";
+	$scope.post = "";
+	$scope.comentario = "";
 
 	//DADOS PARA TESTE
 	// $scope.nome = "Márcio";
@@ -111,9 +114,9 @@ postIt.controller('InicialCtrl', function($scope){
 
 	$scope.postar = function(post) {
 		if (post.trim() == "") {
-			$scope.habilitarEnvio = false;
 			return;
 		}
+
 		socket.emit('makepost', post);
 		$scope.post = "";
 	}
