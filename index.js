@@ -20,7 +20,7 @@ var express = require('express'),
 
 //Diz ao Express que o diretório 'public' contém conteúdos estáticos
 app.use(express.static('public'));
-app.use('/teste', express.static(__dirname + '/node_modules/')); 
+// app.use('/teste', express.static(__dirname + '/node_modules/')); 
 
 http.listen(porta, function(){
 	console.log("Servidor iniciado com sucesso!\nEscutando na porta "+porta);

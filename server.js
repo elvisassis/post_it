@@ -1,167 +1,201 @@
 var UserHandling = module.exports = function(io) {
-    //Mantem controle dos "likes" para cada post
-    this.posts = {};
+	//Mantem controle dos "likes" para cada post
+	this.posts = {};
 
-    this.io = io;
-    this.loggedUsers = {};
-    this.init();
+	//Referencia o objeto do servidor web SocketIO
+	this.io = io;
+
+	//Mantem as referencias aos sockets dos clientes conectados
+	this.loggedUsers = {};
+
+	//Inicializa a conexão com o cliente por meio do SocketIO
+	this.init();
 };
 
 UserHandling.prototype = {
 
-    init: function() {
-      var that = this;
-      this.io.on('connection', function(socket) {
+	init: function() {
+		var that = this;
 
-        socket.on('disconnect', function() {
-          that.onDisconnect(socket);
-        });
+		//Evento disparado quando um novo cliente se conecta com sucesso ao servidor.
+		this.io.on('connection', function(client) {
 
-        that.bindEvents(socket);
-        that.onUserList(socket);
-      });
-    },
+			client.on('disconnect', function() {
+				that.onDisconnect(client);
+			});
 
-    bindEvents: function(socket) {
-      var that = this;
+			//Vincula os eventos emitidos pelo cliente
+			that.bindEvents(client);
+			//Atualiza a lista de clientes conectados
+			that.onUserList(client);
+		});
+	},
 
-      socket.on('userlogin', function(data) {
-        that.onUserLogin(socket, data);
-      });
+	bindEvents: function(client) {
+		var that = this;
 
-      socket.on('userlist', function(data) {
-        that.onUserList(socket, data);
-      });
+		client.on('userlogin', function(data) {
+			that.onUserLogin(client, data);
+		});
 
-      socket.on('makepost', function(data) {
-        console.log(data);
-        that.onMakePost(socket, data);
-      });
+		// client.on('userlist', function(data) {
+		// 	that.onUserList(client, data);
+		// });
 
-      socket.on('makecomment', function(data) {
-        that.onMakeComment(socket, data);
-      });
+		client.on('makepost', function(data) {
+			console.log(data);
+			that.onMakePost(client, data);
+		});
 
-      socket.on('likepost', function(data) {
-        that.onLikePost(socket, data);
-      });
+		client.on('makecomment', function(data) {
+			that.onMakeComment(client, data);
+		});
 
-      socket.on('likecomment', function(data) {
-        that.onLikeComment(socket, data);
-      });
+		client.on('likepost', function(data) {
+			that.onLikePost(client, data);
+		});
 
-    },
+		client.on('likecomment', function(data) {
+			that.onLikeComment(client, data);
+		});
 
-    onDisconnect: function(socket) {
-      delete this.loggedUsers[socket.id];
-      this.onUserList(socket);
-    },
+	},
 
-    sendMessage: function(socket, msg) {
-      socket.emit('msg', {text: msg, type: 'info'});
-    },
+	onDisconnect: function(client) {
+		delete this.loggedUsers[client.id]; //Remove o usuário desconectado da lista
+		this.onUserList(client);
+	},
 
-    onUserLogin: function(socket, data) {
-      var that = this;
-      if(data.nome) {
-        socket.handshake.nome = data.nome;
-        that.loggedUsers[socket.id] = socket;
-        console.log("dados usuario logado " + socket.id);
-        socket.emit('userlogin', {nome: data.nome, id: socket.id});
-        that.onUserList(socket);
-      } else {
-        this.sendMessage(socket, 'vc precisa escolher um nome');
-      }
-    },
+	sendMessage: function(client, tipo, msg) {
+		client.emit('msg', {text: msg, type: tipo});
+	},
 
-    onUserList: function(socket, data) {
-      var that = this,
-          keys = Object.keys(this.loggedUsers),
-          userList = new Array(keys.length),
-          i = 0;
+	onUserLogin: function(client, data) {
+		var that = this;
 
-      keys.forEach(function(k) {
-        userList[i++] = {
-          id: k,
-          nome: that.loggedUsers[k].handshake.nome
-        };
-      });
+		if(data.nome) {
+			client.handshake.nome = data.nome;
+			that.loggedUsers[client.id] = client; //Adiciona um novo cliente à lista
+			// console.log("dados usuario logado " + client.id);
+			//Envia a confirmação que o usuário está logado.
+			client.emit('userlogin', {nome: data.nome, id: client.id});
+			//Envia a lista de usuário atualizada para o cliente
+			that.onUserList(client);
+		} else {
+			//Envia uma mensagem de erro para o cliente
+			this.sendMessage(client, 'error', 'O nome do usuário é obrigatório!');
+		}
+	},
 
-      socket.emit('userlist', userList);
-      socket.broadcast.emit('userlist', userList);
-    },
+	/**
+	 * Envia a lista de usuários atualizada para todos clientes conectados.
+	 * @param {Object} client - Referencia à um cliente conectado
+	 * @param {} data - SEM USO POR ENQUANTO.
+	 */
+	onUserList: function(client, data) {
+		var that = this,
 
-    onMakePost: function(socket, data) {
-      var id = Date.now(),
-          postData = {
-            author: socket.handshake.nome,
-            authorId: socket.id,
-            hora: id,
-            id: id,
-            text: data,
-            likeCount: 0,
-            comentarios: []
-          };
+		/**
+		 * Object.keys - Ordena as propriedades enumeráveis de um objeto
+		 * @var {Object} keys - Contém somente as propriedades enumeráveis de
+		 *	um objeto ordenas.
+		 */
+		keys = Object.keys(this.loggedUsers),
+		/**
+		 * Cria um novo array com o tamanho igual a keys.length
+		 * @var {Object} userList
+		 */
+		userList = new Array(keys.length),
+		i = 0;
 
-          console.log(postData);
+		/**
+		 * Transfere os usuários logados para um novo array para tirar as lacunas
+		 * do array
+		 */
+		keys.forEach(function(k) {
+			userList[i++] = {
+				id: k,
+				nome: that.loggedUsers[k].handshake.nome
+			};
+		});
 
-      //cadastra o post no controle de likes
-      this.posts[id+''] = 0;
+		//Envia a lista de usuários logados para o cliente em questão
+		client.emit('userlist', userList);
+		//Envia a lista de usuários logados para todos os outros clientes conectados
+		client.broadcast.emit('userlist', userList);
+	},
 
-      socket.emit('makepost', postData);
-      socket.broadcast.emit('makepost', postData);
-    },
+	onMakePost: function(client, data) {
+		var id = Date.now(),
+		postData = {
+			author: client.handshake.nome,
+			authorId: client.id,
+			hora: id,
+			id: id,
+			text: data,
+			likeCount: 0,
+			comentarios: []
+		};
 
-    onMakeComment: function(socket, data) {
-      var id = Date.now(),
-          commentData = {
-            author: socket.handshake.nome,
-            authorId: socket.id,
-            hora: Date.now(),
-            text: data.text,
-            postId: data.postId,
-            id: id
-          };
+		console.log(postData);
 
-      //cadastra o post no controle de likes
-      this.posts[id+''] = 0;
+		//cadastra o post no controle de likes
+		this.posts[id+''] = 0;
 
-      socket.emit('makecomment', commentData);
-      socket.broadcast.emit('makecomment', commentData);
-      console.log(commentData);
-    },
+		client.emit('makepost', postData);
+		client.broadcast.emit('makepost', postData);
+	},
 
-    onLikePost: function(socket, data) {
-      var likeCount = this.posts[data.postId+''];
+	onMakeComment: function(client, data) {
+		var id = Date.now(),
+		commentData = {
+			author: client.handshake.nome,
+			authorId: client.id,
+			hora: Date.now(),
+			text: data.text,
+			postId: data.postId,
+			id: id
+		};
 
-      if(data.like) {
-        likeCount += 1;
-      } else {
-        likeCount -= 1;
-      }
+		//cadastra o post no controle de likes
+		this.posts[id+''] = 0;
 
-      this.posts[data.postId+''] = likeCount;
+		client.emit('makecomment', commentData);
+		client.broadcast.emit('makecomment', commentData);
+		console.log(commentData);
+	},
 
+	onLikePost: function(client, data) {
+		var likeCount = this.posts[data.postId+''];
 
+		if(data.like) {
+			likeCount += 1;
+		} else {
+			likeCount -= 1;
+		}
 
-      socket.emit('likepost', {postId: data.postId, numLikes: likeCount});
-      socket.broadcast.emit('likepost', {postId: data.postId, numLikes: likeCount});
-    },
-
-    onLikeComment: function(socket, data) {
-      var likeCount = this.posts[data.commentId+''];
-
-      if(data.like) {
-        likeCount += 1;
-      } else {
-        likeCount -= 1;
-      }
-
-      this.posts[data.commentId+''] = likeCount;
-
-      socket.emit('likecomment', {commentId: data.commentId, numLikes: likeCount});
-      socket.broadcast.emit('likecomment', {commentId: data.commentId, numLikes: likeCount});
-    }
+		this.posts[data.postId+''] = likeCount;
 
 
-  };
+
+		client.emit('likepost', {postId: data.postId, numLikes: likeCount});
+		client.broadcast.emit('likepost', {postId: data.postId, numLikes: likeCount});
+	},
+
+	onLikeComment: function(client, data) {
+		var likeCount = this.posts[data.commentId+''];
+
+		if(data.like) {
+			likeCount += 1;
+		} else {
+			likeCount -= 1;
+		}
+
+		this.posts[data.commentId+''] = likeCount;
+
+		client.emit('likecomment', {commentId: data.commentId, numLikes: likeCount});
+		client.broadcast.emit('likecomment', {commentId: data.commentId, numLikes: likeCount});
+	}
+
+
+};

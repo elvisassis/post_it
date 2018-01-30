@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-br" ng-app="app">
 <head>
 	<meta charset="utf-8">
@@ -13,6 +13,7 @@
 </head>
 <body ng-controller="InicialCtrl as inicio">
 	<div class="container">
+		<!-- ########################## CABEÇALHO ########################## -->
 		<nav class="navbar navbar-inverse" role="navigation">
 			<div class="navbar-header">
 				<span class="navbar-brand">Post IT</span>
@@ -24,21 +25,27 @@
 				</div>
 				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin(nome)">Entrar</button>
 			</div>
-			
 		</nav>
+
+		<!-- ########################## CONTEÚDO ########################## -->
 		<div class="row">
-			<div class="col-md-3" >
+			<!-- =============== Lista dos Usuários Online =============== -->
+			<div class="col-md-3" ng-show='isLogado'>
 				<h3>Quem está online</h3>
 				<ul class="online-users" ng-repeat="usuario in usuariosOnline">
 					<li><span class="glyphicon glyphicon-user"></span> {{usuario.nome}}</li>
 				</ul>
 			</div>
+
+			<!-- =============== Conteúdo Principal =============== -->
 			<div class="col-md-9">
+				<!-- Mensagem Inicial -->
 				<div id="not-logged" ng-hide="isLogado">
-					<h2>Você precisa se conectar</h2>
-					<h3>Digite seu nome e clique em "Entrar"</h3>
+					<h2>Você precisa se conectar!</h2>
+					<h4>Digite seu nome e clique em "Entrar".</h4>
 				</div>
 
+				<!-- Campo de entrada para um novo comentário -->
 				<div id="logged" ng-show="isLogado">
 					<div class="post-form">
 						<div class="action">O que você tem em mente?</div>
@@ -50,6 +57,7 @@
 					<div class="posts"></div>
 				</div>
 			</div>
+
 		</div>
 
 		<div class="post" ng-show="postCount > 0" ng-repeat="post in posts">
@@ -76,7 +84,8 @@
 
 			<div class="post-comments"></div>
 		</div>
-		<div class="comment" ng-show="true" >
+
+		<!-- <div class="comment" ng-show="true" >
 			<div class="poster-info">
 				<span class="poster">{{post.comentarios.author}}</span>
 				<span class="action">escreveu, as</span>
@@ -86,7 +95,7 @@
 			<div class="post-actions">
 				<a class="glyphicon glyphicon-thumbs-up lnk-like-comment" data-comment-id="{{id}}" data-like="true">(0)</a>
 			</div>
-		</div>
+		</div> -->
 	</div>
 
 	<script src="bower_components/angular/angular.js"></script>
