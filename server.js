@@ -34,8 +34,8 @@ UserHandling.prototype = {
 	bindEvents: function(client) {
 		var that = this;
 
-		client.on('userlogin', function(data) {
-			that.onUserLogin(client, data);
+		client.on('userlogin', function(loginData) {
+			that.onUserLogin(client, loginData);
 		});
 
 		// client.on('userlist', function(data) {
@@ -43,7 +43,7 @@ UserHandling.prototype = {
 		// });
 
 		client.on('makepost', function(data) {
-			console.log(data);
+			// console.log(data);
 			that.onMakePost(client, data);
 		});
 
@@ -70,15 +70,15 @@ UserHandling.prototype = {
 		client.emit('msg', {text: msg, type: tipo});
 	},
 
-	onUserLogin: function(client, data) {
+	onUserLogin: function(client, loginData) {
 		var that = this;
 
-		if(data.nome) {
-			client.handshake.nome = data.nome;
+		if(loginData.nome) {
+			client.handshake.nome = loginData.nome;
 			that.loggedUsers[client.id] = client; //Adiciona um novo cliente à lista
 			// console.log("dados usuario logado " + client.id);
 			//Envia a confirmação que o usuário está logado.
-			client.emit('userlogin', {nome: data.nome, id: client.id});
+			client.emit('userlogin', {nome: loginData.nome, id: client.id});
 			//Envia a lista de usuário atualizada para o cliente
 			that.onUserList(client);
 		} else {

@@ -3,9 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Post IT</title>
 	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Post IT</title>
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
 	<link rel="stylesheet" href="styles/main.css">
@@ -19,12 +19,21 @@
 				<span class="navbar-brand">Post IT</span>
 			</div>
 
+			<!-- =============== Formulário Login =============== -->
 			<div class="navbar-form navbar-right" ng-hide="isLogado">
 				<div class="form-group">
-					<input type="text" id="username" ng-model="nome" maxlength="10"  class="form-control input-sm" placeholder="Digite seu nome">
+					<input type="text" id="username" ng-model="login.nome" maxlength="50"  class="form-control input-sm" placeholder="Digite seu nome">
 				</div>
-				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin(nome)" ng-disabled="!nome">Entrar</button>
+				<div class="form-group">
+					<input type="password" id="password" ng-model="login.senha" class="form-control input-sm" placeholder="Digite uma senha">
+				</div>
+				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin()" ng-disabled="!login.nome || !login.senha">Entrar</button>
 			</div>
+
+			<!-- =============== Link Cadastrar =============== -->
+			<p class="navbar-text navbar-right">
+				<a href="#" class="navbar-link" data-toggle='modal' data-target='#modalCadastro'>Cadastrar</a>
+			</p>
 		</nav>
 
 		<!-- ########################## FORMULÁRIO DE CRIAÇÃO DO POST ########################## -->
@@ -68,7 +77,7 @@
 				<div class="poster-info">
 					<span class="poster">{{post.author}}</span>
 					<span class="action">escreveu, às </span>
-					<span class="time">{{post.hora}} hs</span>
+					<span class="time">{{post.hora}} hrs</span>
 				</div>
 				<div class="post-body">{{post.text}}</div>
 				<div class="post-actions">
@@ -93,7 +102,7 @@
 						<div class="poster-info">
 							<span class="poster">{{comentario.author}}</span>
 							<span class="action">comentou, às</span>
-							<span class="time">{{comentario.hora}} hs</span>
+							<span class="time">{{comentario.hora}} hrs</span>
 						</div>
 						<div class="post-body">{{comentario.text}}</div>
 						<div class="post-actions">
@@ -104,11 +113,35 @@
 			</div>
 		</div>
 
+		<!-- ########################## MODAL CADASTRO ########################## -->
+		<div id="modalCadastro" class="modal fade modalCadastro" tabindex="-1" role="dialog" aria-labelledby="modalCadastro" aria-hidden="true">
+			<div class="modal-dialog">
+
+				<!-- =============== Conteúdo da Modal =============== -->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Modal Header</h4>
+					</div>
+					<div class="modal-body">
+						<p>Some text in the modal.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
 	</div>
 
-	<script src="bower_components/angular/angular.js"></script>
-	<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
 
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/socket.io-client/dist/socket.io.js"></script>
+	<!-- <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script> -->
 	<script src="scripts/app.js"></script>
 	<script src="scripts/inicialCtrl.js"></script>
 	<!-- <script src="teste/underscore/underscore.js"></script> -->

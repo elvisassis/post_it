@@ -1,47 +1,33 @@
 postIt.controller('InicialCtrl', function($scope){
 	var socket = io();
 
+	// Inicializa as variáveis utilizadas
 	$scope.isLogado = false;
 	$scope.postCount = 0;
 	$scope.posts = []; //Mantem todos os posts
 	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
-	$scope.nome = "";
+	$scope.login = {
+		nome : "",
+		senha : ""
+	};
 	$scope.post = "";
 	$scope.comentario = "";
+	$scope.usuariosOnline = [];
 
 	//DADOS PARA TESTE
 	// $scope.nome = "Márcio";
 	// $scope.post = "Post de teste";
 	// $scope.comentario = "Comentário de teste";
 
-
-	//$scope.usuariosOnline = [];
-
-	//vm.userLogin = userLogin;
-
-	var vm = this;
-
 	init();
 
 	function init(){
 		// ########################### LISTENERS ###########################
-		// socket.on('conexao', function(dados){
-		// 	console.log(dados);
-		// });
-
-		//io.emit('likecomment', {});
-		//io.emit('unlikecomment', {});
-
-		//socket.on('connect', function(data) {
-		//connect(data);
-		//});
-
 		socket.on('msg', function(data) {
 			console.log(data);
 		});
 
 		socket.on('userlogin', function(data) {
-
 			$scope.usuarioLogado = data; //Armazena os dados do usuário logado.
 			$scope.isLogado = true;
 		});
@@ -103,13 +89,13 @@ postIt.controller('InicialCtrl', function($scope){
 	}
 
 	// ########################### EMITTERS ###########################
-	$scope.userLogin = function (nome) {
-		if (nome.trim() == "") {
+	$scope.userLogin = function () {
+		if ($scope.login.nome.trim() == "" || $scope.login.senha.trim() == "") {
 			alert("O nome é obrigatório!");
 			return;
 		}
 
-		socket.emit('userlogin', {nome: nome});
+		socket.emit('userlogin', $scope.login);
 	}
 
 	$scope.postar = function(post) {
