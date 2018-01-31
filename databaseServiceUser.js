@@ -2,8 +2,8 @@ var request = require("request");
 // const bcrypt = require("bcrypt");
 
 var DatabaseServiceUser = function DatabaseServiceUser() {
-	let urlServerless = "https://wt-913eb0470ecb2a4a0a0a1ad971db009b-0.run.webtask.io/mini-rede-social-db__users";
-	let saltRounds = 10;
+	var urlServerless = "https://wt-913eb0470ecb2a4a0a0a1ad971db009b-0.run.webtask.io/mini-rede-social-db__users";
+	var saltRounds = 10;
 
 	this.create = function(userData, callback) {
 		//Encriptografa a senha do usuário
@@ -33,7 +33,7 @@ var DatabaseServiceUser = function DatabaseServiceUser() {
 			//Recebe a senha encriptografada
 			// loginData.senha = hash;
 
-			let url = urlServerless+"/"+loginData.login+"/"+loginData.senha;
+			var url = urlServerless+"/"+loginData.login+"/"+loginData.senha;
 
 			//Realiza requisição no serviço de serverless enviado os dados de filtro
 			request.get(url, {json:true}, (err, res, body) => {
