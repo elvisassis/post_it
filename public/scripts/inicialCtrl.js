@@ -6,7 +6,7 @@ postIt.controller('InicialCtrl', function($scope){
 	$scope.postCount = 0;
 	$scope.posts = []; //Mantem todos os posts
 	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
-	$scope.login = {nome:"", senha:""};
+	$scope.login = {login:"", senha:""};
 	$scope.novoUsuario = {};
 	$scope.post = "";
 	$scope.comentario = "";
@@ -20,19 +20,30 @@ postIt.controller('InicialCtrl', function($scope){
 	init();
 
 	function init(){
+		$("#btnFecharAlertaErro").on("click", function(){
+			$("#alertaErro").hide();
+		});
+
 		// ########################### LISTENERS ###########################
 		socket.on('msg', function(data) {
-			console.log(data);
+			// console.log(data);
+			// alert(data.text);
+			if (data.type == "error") {
+				$("#alertaErro").show();
+				$("#alertaErro").find("span").html(data.text);
+			}
+			$("#modalLoader").modal("hide");
 		});
 
 		socket.on('userlogin', function(data) {
 			$scope.usuarioLogado = data; //Armazena os dados do usuário logado.
 			$scope.isLogado = true;
+			$("#modalLoader").modal('hide');
 		});
 
-		socket.on('userlist', function(data) {
+		socket.on('userlist', function(client) {
 			//Recebe a lista atualizada dos usuário online.
-			$scope.usuariosOnline = data;
+			$scope.usuariosOnline = client;
 			// console.log(data);
 			$scope.$apply(); //Atualiza as alterações
 		});
@@ -87,6 +98,7 @@ postIt.controller('InicialCtrl', function($scope){
 
 		socket.on("newuser", function(data){
 			alert(data.msg);
+			$("#modalLoader").modal('hide');
 
 			if (!data.err) {
 				$scope.novoUsuario.nome = "";
@@ -100,11 +112,12 @@ postIt.controller('InicialCtrl', function($scope){
 
 	// ########################### EMITTERS ###########################
 	$scope.userLogin = function () {
-		if ($scope.login.nome.trim() == "" || $scope.login.senha.trim() == "") {
-			alert("O nome é obrigatório!");
+		if (!$scope.login.login || !$scope.login.senha) {
+			alert("Login e senha são obrigatórios!");
 			return;
 		}
 
+		$("#modalLoader").modal({backdrop:'static', keyboard:false});
 		socket.emit('userlogin', $scope.login);
 	}
 
@@ -183,6 +196,7 @@ postIt.controller('InicialCtrl', function($scope){
 			return;
 		}
 
+		$("#modalLoader").modal({backdrop:'static', keyboard:false});
 		socket.emit("newuser", novoUsuarioData);
 	}
 

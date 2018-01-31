@@ -41,10 +41,6 @@ UserHandling.prototype = {
 			that.onUserLogin(client, loginData);
 		});
 
-		// client.on('userlist', function(data) {
-		// 	that.onUserList(client, data);
-		// });
-
 		client.on('makepost', function(data) {
 			// console.log(data);
 			that.onMakePost(client, data);
@@ -79,16 +75,23 @@ UserHandling.prototype = {
 	onUserLogin: function(client, loginData) {
 		var that = this;
 
-		if(loginData.nome) {
-			client.handshake.nome = loginData.nome;
-			that.loggedUsers[client.id] = client; //Adiciona um novo cliente à lista
-			//Envia a confirmação que o usuário está logado.
-			client.emit('userlogin', {nome: loginData.nome, id: client.id});
-			//Envia a lista de usuário atualizada para o cliente
-			that.onUserList(client);
+		if(loginData.login && loginData.senha) {
+			databaseServiceUser.verifyUser(loginData, (usuario) => {
+				if (usuario) {
+					client.handshake.nome = usuario.nome;
+					that.loggedUsers[client.id] = client; //Adiciona um novo cliente à lista
+					//Envia a confirmação que o usuário está logado.
+					client.emit('userlogin', {nome: usuario.nome, id: usuario._id});
+					//Envia a lista de usuário atualizada para o cliente
+					that.onUserList(client);
+				} else {
+					//Envia uma mensagem de erro para o cliente
+					this.sendMessage(client, 'error', 'Login e/ou senha estão incorretos!');
+				}
+			});
 		} else {
 			//Envia uma mensagem de erro para o cliente
-			this.sendMessage(client, 'error', 'O nome do usuário é obrigatório!');
+			this.sendMessage(client, 'error', 'Login e senha são obrigatórios!');
 		}
 	},
 

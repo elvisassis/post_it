@@ -22,22 +22,28 @@
 			<!-- =============== Formulário Login =============== -->
 			<div class="navbar-form navbar-right" ng-hide="isLogado">
 				<div class="form-group">
-					<input type="text" id="username" ng-model="login.nome" maxlength="50"  class="form-control input-sm" placeholder="Digite seu nome">
+					<input type="text" id="login" ng-model="login.login" maxlength="50"  class="form-control input-sm" placeholder="Digite seu login">
 				</div>
 				<div class="form-group">
 					<input type="password" id="password" ng-model="login.senha" class="form-control input-sm" placeholder="Digite uma senha">
 				</div>
-				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin()" ng-disabled="!login.nome || !login.senha">Entrar</button>
+				<button type="button" id="btn-entrar" class="btn btn-info input-sm" ng-click="userLogin()" ng-disabled="!login.login || !login.senha">Entrar</button>
 			</div>
 
 			<!-- =============== Link Cadastrar =============== -->
-			<p class="navbar-text navbar-right">
+			<p class="navbar-text navbar-right" ng-hide="isLogado">
 				<a href="#" class="navbar-link" data-toggle='modal' data-target='#modalCadastro'>Cadastrar</a>
 			</p>
 		</nav>
 
 		<!-- ########################## FORMULÁRIO DE CRIAÇÃO DO POST ########################## -->
 		<div class="row">
+			<div class="alert alert-danger alert-dismissable fade in" id="alertaErro" style="display: none">
+				<a href="#" class="close" id="btnFecharAlertaErro" aria-label="close">&times;</a>
+				<span>
+				</span>
+			</div>
+
 			<!-- =============== Lista dos Usuários Online =============== -->
 			<div class="col-md-3" ng-show='isLogado'>
 				<h3>Quem está online</h3>
@@ -51,7 +57,7 @@
 				<!-- Mensagem Inicial -->
 				<div id="not-logged" ng-hide="isLogado">
 					<h2>Você precisa se conectar!</h2>
-					<h4>Digite seu nome e clique em "Entrar".</h4>
+					<h4>Efetue o login ou cadastre-se.</h4>
 				</div>
 
 				<!-- Campo de entrada para um novo post -->
@@ -146,8 +152,21 @@
 			</div>
 		</div>
 
-	</div>
+		<!-- ########################## MODAL LOADER ########################## -->
+		<div id="modalLoader" class="modal fade" role="dialog">
+			<div class="modal-dialog">
 
+				<!-- =============== Conteúdo da Modal =============== -->
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="loader"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
 
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
