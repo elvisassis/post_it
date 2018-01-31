@@ -81,7 +81,7 @@ UserHandling.prototype = {
 					client.handshake.nome = usuario.nome;
 					that.loggedUsers[client.id] = client; //Adiciona um novo cliente à lista
 					//Envia a confirmação que o usuário está logado.
-					client.emit('userlogin', {nome: usuario.nome, id: usuario._id});
+					client.emit('userlogin', {nome: usuario.nome, id: client.id});
 					//Envia a lista de usuário atualizada para o cliente
 					that.onUserList(client);
 				} else {
