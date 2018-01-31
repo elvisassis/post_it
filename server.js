@@ -1,3 +1,6 @@
+var DatabaseServiceUser = require("./databaseServiceUser");
+var databaseServiceUser = new DatabaseServiceUser();
+
 var UserHandling = module.exports = function(io) {
 	//Mantem controle dos "likes" para cada post
 	this.posts = {};
@@ -59,6 +62,9 @@ UserHandling.prototype = {
 			that.onLikeComment(client, data);
 		});
 
+		client.on("newuser", function(novoUsuarioData){
+			that.onNewUser(client, novoUsuarioData);
+		});
 	},
 
 	onDisconnect: function(client) {
@@ -76,7 +82,6 @@ UserHandling.prototype = {
 		if(loginData.nome) {
 			client.handshake.nome = loginData.nome;
 			that.loggedUsers[client.id] = client; //Adiciona um novo cliente à lista
-			// console.log("dados usuario logado " + client.id);
 			//Envia a confirmação que o usuário está logado.
 			client.emit('userlogin', {nome: loginData.nome, id: client.id});
 			//Envia a lista de usuário atualizada para o cliente
@@ -205,7 +210,22 @@ UserHandling.prototype = {
 		//Envia para todos clientes o like atualizado.
 		client.emit('likecomment', {postId:data.commentData.postId, commentId: data.commentData.id, numLikes: likeCount});
 		client.broadcast.emit('likecomment', {postId:data.commentData.postId, commentId: data.commentData.id, numLikes: likeCount});
+	},
+
+	onNewUser: function(client, novoUsuarioData) {
+		var that = this;
+
+		if (novoUsuarioData.nome && novoUsuarioData.login && novoUsuarioData.senha) {
+			//Cadastra usuário no banco de dados
+			databaseServiceUser.create(novoUsuarioData, function(err){
+				if (err) {
+					client.emit("newuser", {err: err, msg: "Erro: Falha na inserção no banco de dados!"});
+				} else {
+					client.emit("newuser", {err: err, msg: "Usuário cadastrado com sucesso!"});
+				}
+			});
+		} else {
+			that.sendMessage(client, 'error', 'Todos campos são obrigatórios!');
+		}
 	}
-
-
 };

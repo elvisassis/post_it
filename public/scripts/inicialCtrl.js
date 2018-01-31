@@ -6,10 +6,8 @@ postIt.controller('InicialCtrl', function($scope){
 	$scope.postCount = 0;
 	$scope.posts = []; //Mantem todos os posts
 	$scope.usuarioLogado = null; //Objeto que contém os dados do usuário logado.
-	$scope.login = {
-		nome : "",
-		senha : ""
-	};
+	$scope.login = {nome:"", senha:""};
+	$scope.novoUsuario = {};
 	$scope.post = "";
 	$scope.comentario = "";
 	$scope.usuariosOnline = [];
@@ -86,6 +84,18 @@ postIt.controller('InicialCtrl', function($scope){
 
 			$scope.$apply();
 		});
+
+		socket.on("newuser", function(data){
+			alert(data.msg);
+
+			if (!data.err) {
+				$scope.novoUsuario.nome = "";
+				$scope.novoUsuario.login = "";
+				$scope.novoUsuario.senha = "";
+				$("#modalCadastro").modal('hide');
+				$scope.$apply();
+			}
+		});
 	}
 
 	// ########################### EMITTERS ###########################
@@ -99,9 +109,7 @@ postIt.controller('InicialCtrl', function($scope){
 	}
 
 	$scope.postar = function(post) {
-		if (post.trim() == "") {
-			return;
-		}
+		if (!post) return;
 
 		socket.emit('makepost', post);
 		$scope.post = "";
@@ -167,6 +175,15 @@ postIt.controller('InicialCtrl', function($scope){
 		}
 
 		socket.emit("likecomment", {"commentData":commentData, "like":like});
+	}
+
+	$scope.cadastrarNovoUsuario = function(novoUsuarioData) {
+		if (!novoUsuarioData.nome || !novoUsuarioData.login || !novoUsuarioData.senha) {
+			alert("Todos campos são obrigatórios!");
+			return;
+		}
+
+		socket.emit("newuser", novoUsuarioData);
 	}
 
 	/**

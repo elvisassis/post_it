@@ -31,9 +31,9 @@
 			</div>
 
 			<!-- =============== Link Cadastrar =============== -->
-			<!-- <p class="navbar-text navbar-right">
+			<p class="navbar-text navbar-right">
 				<a href="#" class="navbar-link" data-toggle='modal' data-target='#modalCadastro'>Cadastrar</a>
-			</p> -->
+			</p>
 		</nav>
 
 		<!-- ########################## FORMULÁRIO DE CRIAÇÃO DO POST ########################## -->
@@ -121,13 +121,25 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Modal Header</h4>
+						<h4 class="modal-title">Cadastrar Novo Usuário</h4>
 					</div>
 					<div class="modal-body">
-						<p>Some text in the modal.</p>
+						<div class="form-group">
+							<label for="">Nome:</label>
+							<input type="text" class="form-control" ng-model="novoUsuario.nome" placeholder="Entre com seu nome" required>
+						</div>
+						<div class="form-group">
+							<label for="">Login:</label>
+							<input type="text" class="form-control" ng-model="novoUsuario.login" placeholder="Entre com seu login" required>
+						</div>
+						<div class="form-group">
+							<label for="">Senha:</label>
+							<input type="password" class="form-control" ng-model="novoUsuario.senha" placeholder="Entre com sua senha" required>
+						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" ng-click="cadastrarNovoUsuario(novoUsuario)">Cadastrar</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 					</div>
 				</div>
 
