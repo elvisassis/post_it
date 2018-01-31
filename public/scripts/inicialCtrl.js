@@ -128,6 +128,12 @@ postIt.controller('InicialCtrl', function($scope){
 		$scope.post = "";
 	}
 
+	$scope.sair = function(){
+		$scope.usuarioLogado = {};
+		$scope.isLogado = false;
+		$scope.login.senha = "";
+		$scope.login.login = "";
+	}
 	//Insere novo comentário ao post
 	$scope.newComment = function(comentario, postId) {
 		if (comentario.trim() == "") {

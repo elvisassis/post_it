@@ -34,6 +34,8 @@
 			<p class="navbar-text navbar-right" ng-hide="isLogado">
 				<a href="#" class="navbar-link" data-toggle='modal' data-target='#modalCadastro'>Cadastrar</a>
 			</p>
+			<p class="navbar-text navbar-right" ng-show="isLogado">{{usuarioLogado.nome}}&nbsp;&nbsp;
+			<a href="#" title="Sair" ng-click="sair()"><span class="glyphicon glyphicon-log-out"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;</p>
 		</nav>
 
 		<!-- ########################## FORMULÁRIO DE CRIAÇÃO DO POST ########################## -->
@@ -76,7 +78,7 @@
 		</div>
 
 		<!-- ########################## LISTA DOS POSTS E COMENTÁRIOS ########################## -->
-		<div class="row" ng-show="postCount > 0" ng-repeat="post in posts">
+		<div class="row" ng-show="postCount > 0 " ng-repeat="post in posts">
 			<div class="col-md-3"></div>
 			<div class="post col-md-9"   >
 				<!-- =============== Post Realizado =============== -->
