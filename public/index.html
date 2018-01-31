@@ -61,9 +61,9 @@
 		</div>
 
 		<!-- ########################## LISTA DOS POSTS E COMENTÁRIOS ########################## -->
-		<div class="row">
+		<div class="row" ng-show="postCount > 0" ng-repeat="post in posts">
 			<div class="col-md-3"></div>
-			<div class="post col-md-9"  ng-show="postCount > 0" ng-repeat="post in posts" >
+			<div class="post col-md-9"   >
 				<!-- =============== Post Realizado =============== -->
 				<div class="poster-info">
 					<span class="poster">{{post.author}}</span>
@@ -78,7 +78,7 @@
 
 				<!-- =============== Formulário Comentário =============== -->
 				<!-- <div data-post-to-comment-id="{{id}}" class="comment-form" ng-show="isComentario"> -->
-				<div class="comment-form" ng-show="post.isComentario">
+				<div class="comment-form " ng-show="post.isComentario" >
 					<div class="action">Deixe seu comentário</div>
 					<textarea class="txt" ng-model="comentario"></textarea>
 					<div class="pull-right">
@@ -88,7 +88,7 @@
 				</div>
 
 				<!-- =============== Lista dos comentários realizados =============== -->
-				<div ng-show="post.comentarios.length > 0" ng-repeat="comentario in post.comentarios" class="post-comments>
+				<div ng-show="post.comentarios.length > 0" ng-repeat="comentario in post.comentarios" class="post-comments">
 					<div class="comment" ng-show="true" >
 						<div class="poster-info">
 							<span class="poster">{{comentario.author}}</span>
