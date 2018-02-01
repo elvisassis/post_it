@@ -66,6 +66,7 @@ UserHandling.prototype = {
 	onDisconnect: function(client) {
 		delete this.loggedUsers[client.id]; //Remove o usuário desconectado da lista
 		this.onUserList(client);
+
 	},
 
 	sendMessage: function(client, tipo, msg) {
